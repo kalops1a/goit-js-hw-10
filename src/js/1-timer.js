@@ -22,12 +22,12 @@ const hoursElement = document.querySelector('[data-hours]');
 const minutesElement = document.querySelector('[data-minutes]');
 const secondsElement = document.querySelector('[data-seconds]');
 
+const startButton = document.getElementById("startButton");
 
-
-
+let timerInterval;
 let userSelectedDate;
 
-const datetimePicker = flatpickr("#datetime-picker", options);
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -36,14 +36,15 @@ const options = {
   onClose(selectedDates) {
     
     userSelectedDate = selectedDates[0];
-    if (userSelectedDate >= this.defaultDate) {
-      alert('Please choose a date in the future');
+    if (userSelectedDate <= this.defaultDate) {
+      window.alert('Please choose a date in the future');
       startButton.disabled = true;
     } else {
       startButton.disabled = false;
     }
   },
 };
+const datetimePicker = flatpickr("#datetime-picker", options);
 
 
 function addLeadingZero(value) {
@@ -56,7 +57,7 @@ startButton.addEventListener('click', () => {
   startButton.disabled = true;
   datetimePicker.disabled = true;
 
-   const ms = userSelectedDate - options.defaultDate;
+   const ms = userSelectedDate - new Date();
 
     timerInterval = setInterval(() => {
      
