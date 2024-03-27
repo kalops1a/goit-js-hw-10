@@ -2,28 +2,34 @@
 import flatpickr from "flatpickr";
 // Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
+
+let userSelectedDate;
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    console.log(selectedDates[0]);
-  },
-};
+    onClose(selectedDates) {
+       
 
-let userSelectedDate = null;
-
-const onCloseHandler = function (selectedDates) {
-
-    if (selectedDates.length > 0) {
-        userSelectedDate = selectedDates[0];
-        const currentDate = new Date();
-        if (userSelectedDate > currentDate) {
-            
+        
+        if (selectedDates[0] > this.defaultDate) {
+            userSelectedDate = selectedDate;
             document.getElementById('startButton').disabled = false;
         } else {
-            document.getElementById(`startButton`).disabled = true;
-        window.alert("Please choose a date in the future");}
+            window.alert("Please choose a date in the future");
+        document.getElementById('startButton').disabled = true;}
     }
-}
+     
+};
+
+const datePicker = flatpickr("#datetime-picker", options);
+
+
+
+
+const startButtonHandler = function() {
+    
+    startCountdown(userSelectedDate);
+};
+        
