@@ -3,6 +3,12 @@ import flatpickr from "flatpickr";
 // Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
 
+
+// Описаний у документації
+import iziToast from "izitoast";
+// Додатковий імпорт стилів
+import "izitoast/dist/css/iziToast.min.css";
+
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
@@ -32,12 +38,17 @@ const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
-  minuteIncrement: 1,
+    minuteIncrement: 1,
+  
   onClose(selectedDates) {
     
     userSelectedDate = selectedDates[0];
-    if (userSelectedDate <= this.defaultDate) {
-      window.alert('Please choose a date in the future');
+    if (userSelectedDate <= new Date()) {
+      iziToast.error({
+        title: 'Error',
+        message: 'Please choose a date in the future',
+        position: 'topRight'
+      });
       startButton.disabled = true;
     } else {
       startButton.disabled = false;
@@ -57,11 +68,24 @@ startButton.addEventListener('click', () => {
   startButton.disabled = true;
   datetimePicker.disabled = true;
 
-   const ms = userSelectedDate - new Date();
+    const selectedDate = datetimePicker.selectedDates[0];
+    
+  const remainingTime = Math.max(selectedDate - new Date(), 0);
 
+  updateTimer(convertMs(remainingTime));
+
+    
+    
     timerInterval = setInterval(() => {
      
-    updateTimer(convertMs(ms));
+    const remainingTime = Math.max(selectedDate - new Date(), 0);
+    updateTimer(convertMs(remainingTime));
+
+    if (remainingTime === 0) {
+      clearInterval(timerInterval);
+      startButton.disabled = false;
+      datetimePicker.disabled = false;
+    }
   }, 1000);
 });
 
@@ -71,16 +95,6 @@ function updateTimer(timeRemaining) {
   minutesElement.textContent = addLeadingZero(timeRemaining.minutes);
   secondsElement.textContent = addLeadingZero(timeRemaining.seconds);
 
-  if (
-    timeRemaining.days === 0 &&
-    timeRemaining.hours === 0 &&
-    timeRemaining.minutes === 0 &&
-    timeRemaining.seconds === 0
-  ) {
-    clearInterval(timerInterval); 
-    startButton.disabled = false; 
-    datetimePicker.disabled = false; 
-  }
 }
 
 
