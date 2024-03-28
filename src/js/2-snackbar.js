@@ -5,7 +5,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 const form = document.querySelector('.form');
-form.addEventListener('submit', handleSubmit);
+
 
 const delayInput = form.querySelector('input[name="delay"]');
 const stateRadios = form.querySelectorAll('input[name="state"]');
@@ -18,7 +18,12 @@ form.addEventListener('submit', (event) => {
   const delay = parseInt(delayInput.value);
 
  
-  const shouldFulfill = stateRadios.value === 'fulfilled';
+  let shouldFulfill;
+  stateRadios.forEach(radio => {
+    if (radio.checked) {
+      shouldFulfill = radio.value === 'fulfilled';
+    }
+  });
 
 
   const notificationPromise = new Promise((resolve, reject) => {
